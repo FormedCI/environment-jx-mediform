@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth-example ### CHANGE or must be the same name as configmap in env/values.yaml
+data: 
+  ### CHANGE or must be the same filename as env/values.yaml
+  example.pem: |-
+    -----BEGIN CERTIFICATE-----
+    MRswGQYDVQQDHhIASgBPAFMARQBfAFQARQBTAFQwHhcNMTkwNzE1MjMyMDAyWhcN
+    DasdfQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANNfjXsr/+bRgdZLytWi4zZ5ZEO9
+    ZSyT2SzzEv5nWZe2DyO2DRZYv8El9V3+cXNzqNUgJrrjYWKDKMzUbtt4iNasdfas
+    01tfc3r9ZIC4l2RtqHZg5bK2zTEGyOm+7tS84AbAIIIsSOADUasdyBXMwts7iI55
+    IkHPKE6j3b3dAgMBAAGjUjBQME4GA1UdAQRHMEWAECpADCzB0xjzQdTAQctzyyqh
+    KJ15neYvY3u1Mhy9A5LczRPxrOMomM8imQji4CuwFhOBHRRIRHom8fMONNp04SLq
+    rgzJ1a0=
+    -----END CERTIFICATE-----

@@ -5,6 +5,96 @@ cleanup:
     helm.sh/hook-delete-policy: hook-succeeded
   Args:
   - --cleanup
+controllerbuild:
+  enabled: true
+controllerworkflow:
+  enabled: false
+dockerRegistry: 186913866835.dkr.ecr.us-east-1.amazonaws.com
+##### Values that must be changed By enviroments
+## Complete with the DB info, if DB not exist it will be created and populate with migrations and seeds
+formsproduct:
+  ## If MountEFS is false we wont mount EFS.
+  MountEFS: true
+  ## Skip the efs section if MountEFS is false
+  env:
+    DB_FORMEDAI: formedai_mediform
+    DB_FORMEDAI_URL: nexusproduction.cxkyccvvyk77.us-east-1.rds.amazonaws.com
+    DB_PASS: eRxJY2u42uHDxHr7
+    DB_USER: nmediform
+    ## Default values for all environments
+    ## Nexus config
+    NEXUS_isProduction: false
+
+    ## Email
+    NEXUS_EmailForm: no-reply@formed.ai
+    NEXUS_EmailclassName: Smtp
+    NEXUS_EmailTransport: email-smtp.us-east-1.amazonaws.com
+    NEXUS_EmailPort: 587
+    NEXUS_EmailUserName: AKIASXBHPIRJSR54GGFK
+    NEXUS_EmailPassword: BE2wqbMH5ZTfEbap4yOXZNm4yZylYlPIe4sltJR60wOi
+
+    ## Pusher
+    NEXUS_PusherAppKey: 21e5e38c353174542082
+    NEXUS_PusherAppSecret: c4ed21bda193617127af
+    NEXUS_PusherAppId: 804232
+    NEXUS_PusherAppCluster: us2
+
+    ## Credentials AWS to send SMS
+    AWS_SECRET_ACCESS_KEY: 2uUorrcNQrJsIAw0WgC4UNC+rTUtBHLCt7QR6IB0
+    AWS_ACCESS_KEY_ID: AKIASXBHPIRJQMCRW4EZ
+
+    ### Modules
+    ## FormsInstances
+    #NEXUS_FormInstancesActionExport: true
+    #NEXUS_FormsInstancesCSVExport: false
+
+    ## oAuth EXAMPLE
+    #NEXUS_oAuthPovider1Name:  clinicientdepositportal
+    #NEXUS_oAuthPovider1Label: Clinicient
+    #NEXUS_oAuthPovider1ClassName: 'Utility\\OAuth\\Provider\\ClinicientDepositPortal\\ClinicientDepositPortal'
+    #NEXUS_oAuthPovider1OptClientId: clientdepositportal-insightgo-test
+    #NEXUS_oAuthPovider1OptClientSecret: ""
+    #NEXUS_oAuthPovider1OptPublic_key: clinicient.pem
+    #NEXUS_oAuthPovider1OptScope: 'openid email profile staff'
+    #NEXUS_oAuthPovider1OptNonce: '<XXXXXXXXXXXX>'
+    #NEXUS_oAuthPovider1OptResponse_type: id_token
+    #NEXUS_oAuthPovider1OptResponse_mode: fragment
+    #NEXUS_oAuthPovider1OptRedirectUri: 'https://clinicient.formed.ai/users/externalLogin?provider=clinicientdepositportal'
+
+    ## DashBoard config EXAMPLE
+    #NEXUS_DashboardShow: falses
+    #NEXUS_DashboardService: ''
+    #NEXUS_DashboardShowAllOnInbox: false
+    #NEXUS_DashboardShowGroups: false
+    #NEXUS_DashboardConnect: false
+
+  configMaps:
+    app-php-nexus: #Name of configMap, Must be the same name as set in templates/XXXConfigMap.yaml
+      as: volume
+      mountPath: /var/www/html/config/app.php
+      subPath: app.php
+    #### Example to add PEM file.
+    #oauth-example: #Name of configMap, Must be the same name as set in templates/oAuthXXXXXX.yaml (line 4)
+    #  as: volume
+    #  mountPath: /var/www/html/src/Utility/OAuth/Provider/ClinicientDepositPortal/clinicient.pem # Filename must be the same as templates/oAuthXXXXXX.yaml (line 7)
+    #  subPath: example.pem # Filename must be the same as templates/oAuthXXXXXX.yaml (line 7)
+
+
+  volumeMounts:
+    files: "/var/www/html/webroot/files"
+    uploads: "/var/www/html/webroot/uploads"
+    img-forms: "/var/www/html/webroot/img/forms"
+
+  volumes:
+    files: efs-files-v2
+    uploads: efs-upload-v2
+    img-forms: efs-img-forms-v2
+
+
+  ## Relpica set for pods
+  replicaCount: 1
+## End Enviroment values
+##### END of Values to change
 expose:
   Annotations:
     helm.sh/hook: post-install,post-upgrade
@@ -18,5 +108,9 @@ expose:
     http: "true"
 jenkins:
   Servers:
-    Global: {}
+    Global:
+      EnvVars:
+        DOCKER_REGISTRY: 186913866835.dkr.ecr.us-east-1.amazonaws.com
+        TILLER_NAMESPACE: kube-system
+  enabled: false
 prow: {}

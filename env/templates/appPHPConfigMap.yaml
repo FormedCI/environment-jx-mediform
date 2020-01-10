@@ -1,0 +1,186 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-php-nexus
+data:
+  app.php: |-
+    <?php
+    return [
+        'debug' => false,
+
+        'App' => [
+            'namespace' => 'App',
+            'encoding' => env('APP_ENCODING', 'UTF-8'),
+            'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
+            'base' => false,
+            'dir' => 'src',
+            'webroot' => 'webroot',
+            'wwwRoot' => WWW_ROOT,
+            'url' => 'http://formsproduct/',
+            'isProduction' => getenv('NEXUS_isProduction'), // Boolean default false
+            // 'baseUrl' => env('SCRIPT_NAME'),
+            'fullBaseUrl' => false,
+            'imageBaseUrl' => 'img/',
+            'cssBaseUrl' => 'css/',
+            'jsBaseUrl' => 'js/',
+            'paths' => [
+                'plugins' => [ROOT . DS . 'plugins' . DS],
+                'templates' => [APP . 'Template' . DS],
+                'locales' => [APP . 'Locale' . DS],
+            ],
+            'modules' => [
+              /*  'formInstances' => [
+              *       'list' => [
+              *           'actions' => [
+              *               'export' => getenv('NEXUS_FormInstancesActionExport'), //Bollean default true
+              *           ],
+              *           'csvExport' => getenv('NEXUS_FormsInstancesCSVExport'), //Bollean default false
+              *       ]
+              *   ],*/
+                // The name of the dashboard service must be pascal cased and must match with the reports' class name
+                // (Can contain spaces and the word Report on the end is optional).
+                // NOTE: The available services can be found on the folder Utility/Reports (They names end in "Report").
+                // e.g. "Charter One Report", "Charter One", CharterOne", "CityOfLAReport", "CityOfLA Report", ...
+               /* 'dashboard' => [
+                *    'show' => getenv('NEXUS_DashboardShow'), //Bollean default false
+                *    'service' => getenv('NEXUS_DashboardService') //Bollean default NULL
+                *],*/
+                /* 'inbox' => [
+                *     'showAllOnInbox' => getenv('NEXUS_DashboardShowAllOnInbox') //Bollean default false 
+                * ],
+                * 'groups' => [
+                *     'show' => getenv('NEXUS_DashboardShowGroups') //Bollean default false
+                * ],
+                * 'connect' => [
+                *     'enabled' => getenv('NEXUS_DashboardConnect'), //Bollean default false
+                *     'providers' => [
+                *         'Pokitdok' => APP . 'Utility' . DS . 'Connect' . DS . 'Providers' . DS . 'Pokitdok' . DS . 'pokitdok_provider.json'
+                *     ],
+                ], */
+            ],
+        ], // Close App
+
+        /*'OAuth' => [
+        *    'providers' => [
+        *        getenv('NEXUS_oAuthPovider1Name') => [
+        *            'label' => getenv('NEXUS_oAuthPovider1Label'),
+        *            'className' => getenv('NEXUS_oAuthPovider1OptClientId'),
+        *            'options' => [
+        *                'clientId' => getenv('NEXUS_oAuthPovider1OptClientId'),
+        *                'clientSecret' => getenv('NEXUS_oAuthPovider1OptClientSecret'),
+        *                'public_key' => getenv('NEXUS_oAuthPovider1OptPublic_key'), //this is the pem name what is into src/Utility/OAuth/Provider/ClinicientDepositPortal
+        *                'scope' => getenv('NEXUS_oAuthPovider1OptScope'),
+        *                'nonce' => getenv('NEXUS_oAuthPovider1OptNonce'),
+        *                'response_type' => getenv('NEXUS_oAuthPovider1OptResponse_type'),
+        *                'response_mode' => getenv('NEXUS_oAuthPovider1OptResponse_mode'),
+        *                'redirectUri' => getenv('NEXUS_oAuthPovider1OptRedirectUri'),
+        *            ],
+        *        ],
+        *     ],
+        ], */ 
+
+        'Security' => [
+            'salt' => env('SECURITY_SALT', '94c03ce03e2a898b6d1929455deefaee19e17f08ace7e19a86ec88f62dca6d11'),
+        ],
+        'Asset' => [
+            // 'timestamp' => true,
+        ],
+        'Cache' => [
+            'default' => [
+                'className' => 'File',
+                'path' => CACHE,
+                'url' => env('CACHE_DEFAULT_URL', null),
+            ],
+            '_cake_core_' => [
+                'className' => 'File',
+                'prefix' => 'myapp_cake_core_',
+                'path' => CACHE . 'persistent/',
+                'serialize' => true,
+                'duration' => '+1 years',
+                'url' => env('CACHE_CAKECORE_URL', null),
+            ],
+            '_cake_model_' => [
+                'className' => 'File',
+                'prefix' => 'myapp_cake_model_',
+                'path' => CACHE . 'models/',
+                'serialize' => true,
+                'duration' => '+1 years',
+                'url' => env('CACHE_CAKEMODEL_URL', null),
+            ],
+        ],
+        'Error' => [
+            'errorLevel' => E_ALL ^ E_USER_DEPRECATED,
+            'exceptionRenderer' => 'App\Error\AppExceptionRenderer',
+            'skipLog' => [],
+            'log' => true,
+            'trace' => true,
+        ],
+        'EmailTransport' => [
+            'default' => [
+                'className' => getenv('NEXUS_EmailclassName'), // String, default smtp
+                'host' => getenv('NEXUS_EmailTransport'), // String, default email-smtp.us-east-1.amazonaws.com
+                'port' => getenv('NEXUS_EmailPort'), // Integer, default 587
+                'username' => getenv('NEXUS_EmailUserName'), // Provided by AMI AWS
+                'password' => getenv('NEXUS_EmailPassword'), // Provided by AMI AWS
+                'timeout' => 30,
+                'client' => null,
+                'tls' => true,
+                'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            ],
+        ],
+        'Email' => [
+            'default' => [
+                'transport' => 'default',
+                'from' => getenv('NEXUS_EmailForm'),
+                'charset' => 'utf-8',
+                'headerCharset' => 'utf-8',
+            ],
+        ],
+        'Datasources' => [
+            'default' => [
+                'className' => 'Cake\Database\Connection',
+                'driver' => 'Cake\Database\Driver\Mysql',
+                'persistent' => false,
+                'host' => getenv('DB_FORMEDAI_URL'), // String 
+                //'port' => 'non_standard_port_number',
+                'username' => getenv('DB_USER'), // String
+                'password' => getenv('DB_PASS'), // String
+                'database' => getenv('DB_FORMEDAI'), //String
+                'encoding' => 'utf8',
+                'timezone' => 'UTC',
+                'flags' => [],
+                'cacheMetadata' => true,
+                'log' => false,
+                // 'unix_socket' => '/opt/lampp/var/mysql/mysql.sock',
+                'quoteIdentifiers' => false,
+                'url' => env('DATABASE_URL', null),
+            ],
+        ],  
+        'Log' => [
+            'debug' => [
+                'className' => 'Cake\Log\Engine\FileLog',
+                'path' => LOGS,
+                'file' => 'debug',
+                'levels' => ['notice', 'info', 'debug'],
+                'url' => env('LOG_DEBUG_URL', null),
+            ],
+            'error' => [
+                'className' => 'Cake\Log\Engine\FileLog',
+                'path' => LOGS,
+                'file' => 'error',
+                'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+                'url' => env('LOG_ERROR_URL', null),
+            ],
+        ],
+        /*'Session' => [
+        *    'defaults' => 'php',
+        *    'timeout' => 1440,
+        * ], */
+        'Pusher' => [
+            'appKey' => getenv('NEXUS_PusherAppKey'), // AlphaNumeric
+            'appSecret' => getenv('NEXUS_PusherAppSecret'), // AlphaNumeric
+            'appId' => getenv('NEXUS_PusherAppId'), // Integer
+            'appcluster' => getenv('NEXUS_PusherAppCluster') //String default us2
+        ],
+    ];
+    

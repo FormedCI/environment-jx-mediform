@@ -1,0 +1,39 @@
+{{- if .Values.formsproduct.MountEFS }}
+#### Set presistant volumes in k8s
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: efs-upload-v2
+spec:
+  storageClassName: aws-efs-nexus
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: efs-files-v2
+spec:
+  storageClassName: aws-efs-nexus
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: efs-img-forms-v2
+spec:
+  storageClassName: aws-efs-nexus
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
+#### End of PresistanVolumes
+{{- end }}
